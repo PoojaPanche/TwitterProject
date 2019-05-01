@@ -19,39 +19,50 @@ public class Twitter {
 		// Launch Chrome Browser
 		System.setProperty("webdriver.chrome.driver", "E:\\chromedriver_win32\\chromedriver.exe");
 		ChromeOptions chromeOptions = new ChromeOptions();
-		chromeOptions.setAcceptInsecureCerts(true);
 		chromeOptions.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.ACCEPT);
 		WebDriver driver = new ChromeDriver(chromeOptions);
+		
+		WebDriverWait wait = new WebDriverWait(driver, 5);
 
 		// Launch Twitter
 		
 		driver.get("https://twitter.com/login");
+		
 		driver.manage().window().maximize();
 
 		// Twitter Login
 		
-		WebElement username = driver.findElement(By.xpath("//input[@placeholder='Phone, email or username']"));
+		
+		WebElement username = driver.findElement(By.xpath("//input[@class='js-username-field email-input js-initial-focus']"));
 		username.sendKeys(user);
 		WebElement password = driver.findElement(By.xpath("//input[@class='js-password-field']"));
 		password.sendKeys(passWord);
 
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		
+		
+		WebElement loginButton=wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@type='submit']")));
+		loginButton.click();
 		
 
 		// Search for POTUS
-
+		
+		
 		WebElement searchword = driver.findElement(By.xpath("//input[@id='search-query']"));
 		searchword.sendKeys("POTUS");
-		driver.findElement(By.xpath("//button[@class='Icon Icon--medium Icon--search nav-search']")).click();
-		 Thread.sleep(2000);
 
-		WebDriverWait wait = new WebDriverWait(driver, 5);
+		WebElement searchButton=wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@class='Icon Icon--medium Icon--search nav-search']")));
+		searchButton.click();
+		 
+
+
 		WebElement potus = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[@href='/POTUS']")));
 		potus.click();
        
 		//Validate to following POTUS
 	
 		String validate = driver.findElement(By.xpath("//span[@class='user-actions-follow-button js-follow-btn follow-button']")).getText();
+		
+		System.out.println(validate);
 		driver.findElement(By.xpath("//span[@class='user-actions-follow-button js-follow-btn follow-button']")).click();
 		if ("Following\nFollowing".equalsIgnoreCase(validate)) {
 			System.out.println("You are following POTUS");
@@ -64,10 +75,12 @@ public class Twitter {
 
 		// Logout
 
-		driver.findElement(By.id("user-dropdown-toggle")).click();
+		
+		driver.findElement(By.xpath("//a[@href='/settings']")).click();
+		
 		driver.findElement(By.id("signout-button")).click();
 
-		
+		  
 
 	}
 	
